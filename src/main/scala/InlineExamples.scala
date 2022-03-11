@@ -38,7 +38,7 @@ def inlineMatching(): Unit = {
   inline def triple(inline value: String | Int): Any =
     inline value match {
       case intValue: Int => intValue * 3
-      case stringValue: String => stringValue * 3
+      case stringValue: String => stringValue.repeat(3)
     }
 
   println(triple("M")) // MMM
@@ -53,7 +53,7 @@ def inlineTransparent(): Unit = {
   transparent inline def triple(inline value: String | Int): Any =
     inline value match {
       case intValue: Int => intValue * 3
-      case stringValue: String => stringValue * 3
+      case stringValue: String => stringValue.repeat(3)
     }
 
   println(triple("M").charAt(0)) // M
