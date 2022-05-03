@@ -1,12 +1,9 @@
-
-
-
 @main
 def inlineVal(): Unit = {
   val variable = 1
-  inline val inlinedVariable = 2
-
   println(variable)
+  
+  inline val inlinedVariable = 2
   println(inlinedVariable)
 }
 
@@ -15,10 +12,11 @@ def inlineDef(): Unit = {
   def log(arg: String): Unit =
     println("[LOG] " + arg)
 
+  log("just log")
+
   inline def inlinedLog(arg: String): Unit =
     println("[LOG] " + arg)
 
-  log("just log")
   inlinedLog("inlined log!")
 }
 
@@ -38,7 +36,7 @@ def inlineMatching(): Unit = {
   inline def triple(inline value: String | Int): Any =
     inline value match {
       case intValue: Int => intValue * 3
-      case stringValue: String => stringValue.repeat(3)
+      case stringValue: String => stringValue * 3
     }
 
   println(triple("M")) // MMM
@@ -53,12 +51,9 @@ def inlineTransparent(): Unit = {
   transparent inline def triple(inline value: String | Int): Any =
     inline value match {
       case intValue: Int => intValue * 3
-      case stringValue: String => stringValue.repeat(3)
+      case stringValue: String => stringValue * 3
     }
 
   println(triple("M").charAt(0)) // M
   println(triple(3) + 4) // 13
 }
-
-
-

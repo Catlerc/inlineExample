@@ -1,6 +1,6 @@
 package ShowExample
 
-import scala.collection.mutable.StringBuilder
+import java.lang.StringBuilder
 import scala.compiletime.*
 import scala.deriving.Mirror
 
@@ -10,23 +10,25 @@ trait Show[T] {
 
 object Show {
   extension[T] (value: T) {
-    inline def show(using inline showInstance: Show[T]) = showInstance.show(value)
+    def show(using showInstance: Show[T]) = showInstance.show(value)
   }
 
   private inline def derivedRecursive[FieldsType <: Tuple](inline builder: StringBuilder, inline fields: FieldsType): StringBuilder =
     inline fields match {
-      case s: EmptyTuple => builder
-      case s: Tuple1[headType] =>
+      case _: EmptyTuple => builder
+      case tuple: Tuple1[headType] =>
+        val toAppend = summonInline[Show[headType]].show(tuple.head)
         derivedRecursive(
-          builder.append(summonInline[Show[headType]].show(s.head)),
-          s.tail
+          builder.append(toAppend),
+          tuple.tail
         )
-      case s: (headType *: _) =>
+      case tuple: (headType *: _) =>
+        val toAppend = summonInline[Show[headType]].show(tuple.head)
         derivedRecursive(
           builder
-            .append(summonInline[Show[headType]].show(s.head))
+            .append(toAppend)
             .append(", "),
-          s.tail
+          tuple.tail
         )
     }
 
@@ -37,7 +39,7 @@ object Show {
         .append(")").toString()
 
 
-  inline given Show[Int] = _.toString
+  given Show[Int] = _.toString
 
-  inline given Show[String] = str => s"\"$str\""
+  given Show[String] = str => s"\"$str\""
 }
