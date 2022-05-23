@@ -4,26 +4,26 @@ import java.lang.StringBuilder
 import scala.compiletime.*
 import scala.deriving.Mirror
 
-trait Show[T] {
-  def show(value: T): String
+trait Loggable[T] {
+  def log(value: T): String
 }
 
-object Show {
+object Loggable {
   extension[T] (value: T) {
-    def show(using showInstance: Show[T]) = showInstance.show(value)
+    def log(using instance: Loggable[T]) = instance.log(value)
   }
 
   private inline def derivedRecursive[FieldsType <: Tuple](inline builder: StringBuilder, inline fields: FieldsType): StringBuilder =
     inline fields match {
       case _: EmptyTuple => builder
       case tuple: Tuple1[headType] =>
-        val toAppend = summonInline[Show[headType]].show(tuple.head)
+        val toAppend = summonInline[Loggable[headType]].log(tuple.head)
         derivedRecursive(
           builder.append(toAppend),
           tuple.tail
         )
       case tuple: (headType *: _) =>
-        val toAppend = summonInline[Show[headType]].show(tuple.head)
+        val toAppend = summonInline[Loggable[headType]].log(tuple.head)
         derivedRecursive(
           builder
             .append(toAppend)
@@ -32,14 +32,14 @@ object Show {
         )
     }
 
-  inline def derived[T <: Product](using product: Mirror.ProductOf[T]): Show[T] =
+  inline def derived[T <: Product](using mirror: Mirror.ProductOf[T]): Loggable[T] =
     caseClass =>
       derivedRecursive(StringBuilder()
-        .append(constValue[product.MirroredLabel] + "("), Tuple.fromProductTyped(caseClass))
-        .append(")").toString()
+        .append(constValue[mirror.MirroredLabel] + "{"), Tuple.fromProductTyped(caseClass))
+        .append("}").toString
 
 
-  given Show[Int] = _.toString
+  given Loggable[Int] = int => s"Int{$int}"
 
-  given Show[String] = str => s"\"$str\""
+  given Loggable[String] = str => s"String{$str}"
 }
