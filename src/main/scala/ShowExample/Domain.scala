@@ -11,6 +11,6 @@ object Domain {
   case class RequestData(arg1: Int, arg2: Int)
     derives Loggable
 
-  case class Request(path: String, data: RequestData, session: Session)
+  case class Request(path: String, session: Session, data: RequestData)
     derives Loggable
 }

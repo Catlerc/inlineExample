@@ -8,6 +8,6 @@ import ShowExample.Domain.*
 
 @main
 def main = {
-  println(Request("/some/page", RequestData(1, 2), Session("13376211")).log)
+  println(Request("/some/page", Session("13376211"), RequestData(1, 2)).log)
 }
 
