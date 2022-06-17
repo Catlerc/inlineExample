@@ -1,4 +1,4 @@
-package ShowExample
+package LoggableExample
 
 import java.lang.StringBuilder
 import scala.compiletime.*
