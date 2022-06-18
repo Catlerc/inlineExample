@@ -1,4 +1,4 @@
-package ShowExample
+package LoggableExampleNoTuples
 
 trait NewType[RealType] {
   opaque type Type = RealType

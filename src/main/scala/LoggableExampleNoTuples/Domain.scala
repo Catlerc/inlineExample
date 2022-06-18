@@ -1,8 +1,7 @@
-package ShowExample
+package LoggableExampleNoTuples
 
 object Domain {
   type Session = Session.Type
-
   object Session extends NewType[String]
   {
     given Loggable[Session] = _ => "Session{MASKED}"
